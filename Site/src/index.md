@@ -8,66 +8,13 @@ toc: false
   <a href="https://observablehq.com/framework/getting-started">Get started<span style="display: inline-block; margin-left: 0.25rem;">↗︎</span></a>
 </div>
 
-<div class="grid grid-cols-2" style="grid-auto-rows: 504px;">
-  <div class="card">${
-    resize((width) => Plot.plot({
-      title: "Your awesomeness over time 🚀",
-      subtitle: "Up and to the right!",
-      width,
-      y: {grid: true, label: "Awesomeness"},
-      marks: [
-        Plot.ruleY([0]),
-        Plot.lineY(aapl, {x: "Date", y: "Close", tip: true})
-      ]
-    }))
-  }</div>
-  <div class="card">${
-    resize((width) => Plot.plot({
-      title: "How big are penguins, anyway? 🐧",
-      width,
-      grid: true,
-      x: {label: "Body mass (g)"},
-      y: {label: "Flipper length (mm)"},
-      color: {legend: true},
-      marks: [
-        Plot.linearRegressionY(penguins, {x: "body_mass_g", y: "flipper_length_mm", stroke: "species"}),
-        Plot.dot(penguins, {x: "body_mass_g", y: "flipper_length_mm", stroke: "species", tip: true})
-      ]
-    }))
-  }</div>
-</div>
 
 ---
 
-## Next steps
 
-Here are some ideas of things you could try…
-
-<div class="grid grid-cols-4">
-  <div class="card">
-    Chart your own data using <a href="https://observablehq.com/framework/lib/plot"><code>Plot</code></a> and <a href="https://observablehq.com/framework/files"><code>FileAttachment</code></a>. Make it responsive using <a href="https://observablehq.com/framework/javascript#resize(render)"><code>resize</code></a>.
-  </div>
-  <div class="card">
-    Create a <a href="https://observablehq.com/framework/project-structure">new page</a> by adding a Markdown file (<code>whatever.md</code>) to the <code>src</code> folder.
-  </div>
-  <div class="card">
-    Add a drop-down menu using <a href="https://observablehq.com/framework/inputs/select"><code>Inputs.select</code></a> and use it to filter the data shown in a chart.
-  </div>
-  <div class="card">
-    Write a <a href="https://observablehq.com/framework/loaders">data loader</a> that queries a local database or API, generating a data snapshot on build.
-  </div>
-  <div class="card">
-    Import a <a href="https://observablehq.com/framework/imports">recommended library</a> from npm, such as <a href="https://observablehq.com/framework/lib/leaflet">Leaflet</a>, <a href="https://observablehq.com/framework/lib/dot">GraphViz</a>, <a href="https://observablehq.com/framework/lib/tex">TeX</a>, or <a href="https://observablehq.com/framework/lib/duckdb">DuckDB</a>.
-  </div>
-  <div class="card">
-    Ask for help, or share your work or ideas, on our <a href="https://github.com/observablehq/framework/discussions">GitHub discussions</a>.
-  </div>
-  <div class="card">
-    Visit <a href="https://github.com/observablehq/framework">Framework on GitHub</a> and give us a star. Or file an issue if you’ve found a bug!
-  </div>
-</div>
 
 <style>
+
 
 .hero {
   display: flex;
@@ -108,4 +55,154 @@ Here are some ideas of things you could try…
   }
 }
 
+
 </style>
+<div class="card" style="padding: 1rem;">
+ <h2>Earthquake Map </h2>
+  <h3>test </h3>
+
+```js
+const data = await FileAttachment("data/earthquakes-2026-03-26_13-34-17_+0100.tsv").tsv();
+const world = await FileAttachment("data/world.geo.json").json();
+const minYear = 1800;
+const maxYear = d3.max(data, d => +d.Year);
+const yearRange = view(Inputs.range([minYear, maxYear], {
+  step: 1,
+  value: maxYear,
+  label: null,
+  width: 300
+}));
+```
+
+<div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 0.5rem;">
+  <span><strong>${minYear}</strong></span>
+  <span>Showing up to: <strong>${yearRange}</strong></span>
+  <span><strong>${maxYear}</strong></span>
+</div>
+
+```js
+// Datarange selecteren
+const filtered = data.filter(d => +d.Year <= yearRange && d.Mag && +d.Mag > 0);
+// Kleurschaal definiëren
+const colorScale = d3.scaleSequential()
+  .domain([0, 10])
+  .interpolator(t => d3.interpolateRdBu(1 - t));
+const magScale = d3.scaleSqrt().domain([0, 10]).range([1, 15]);
+
+// Dynamische kaartgrootte
+display(resize((width) => {
+  const height = width / 2;
+  const projection = d3.geoNaturalEarth1().fitSize([width, height], world);
+  const path = d3.geoPath(projection);
+  const svg = d3.create("svg")
+    .attr("viewBox", [0, 0, width, height])
+    .style("cursor", "grab");
+
+  // Zoombare groep
+  const g = svg.append("g");
+  const CircleSize = 
+
+  // Kaart toevoegen
+  g.append("g")
+    .selectAll("path")
+    .data(world.features)
+    .join("path")
+    .attr("d", path)
+    .attr("fill", "#eee")
+    .attr("stroke", "#999");
+
+  // Tooltip 
+  const tooltip = d3.select("body").append("div")
+    .style("position", "absolute")
+    .style("background", "white")
+    .style("border", "1px solid #ccc")
+    .style("border-radius", "6px")
+    .style("padding", "8px 12px")
+    .style("font-size", "13px")
+    .style("pointer-events", "none")
+    .style("opacity", 0);
+
+  // Elementen toevoegen op kaart
+    g.append("g")
+    .selectAll("circle")
+    .data(filtered)
+    .join("circle")
+    .attr("cx", d => projection([+d.Longitude, +d.Latitude])[0])
+    .attr("cy", d => projection([+d.Longitude, +d.Latitude])[1])
+    .attr("r", d => magScale(+d.Mag*0.1))   // ← fixed, no event here
+    .attr("fill", "none")
+    .attr("stroke", d => colorScale(+d.Mag))
+    .attr("stroke-width", 1)
+    .attr("opacity", 0.7)
+    .style("cursor", "pointer")
+    .on("mouseover", (event, d) => {
+      tooltip.style("opacity", 1)
+        .html(`
+            <strong>Magnitude:</strong> ${d.Mag}<br/>
+            <strong>Year:</strong> ${d.Year}<br/>
+            <strong>Deaths:</strong> ${d["Deaths"] || "?"}<br/>
+            <strong>Damage ($Mil):</strong> ${d["Damage ($Mil)"] || "?"}<br/>
+        `);
+    })
+    .on("mousemove", (event) => {
+      tooltip
+        .style("left", (event.pageX + 12) + "px")
+        .style("top", (event.pageY - 28) + "px");
+    })
+    .on("mouseout", () => tooltip.style("opacity", 0));
+
+  // Zoom behavior
+  const zoom = d3.zoom()
+    .scaleExtent([1, 8])
+    .on("zoom", (event) => {
+      g.attr("transform", event.transform);
+      svg.style("cursor", "grabbing");
+      g.selectAll("circle")
+        .attr("r", d => magScale(+d.Mag*0.1) / event.transform.k);
+      legend.selectAll("circle")
+        .attr("r", d => magScale(d) / event.transform.k);
+    })
+    .on("end", () => svg.style("cursor", "grab"));
+
+  svg.call(zoom);
+
+  // Dubbelklik om zoom te resetten
+  svg.on("dblclick.zoom", () => {
+    svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity);
+  });
+
+  // Size legend (vast, buiten zoomgroep)
+  const legend = svg.append("g")
+    .attr("transform", `translate(20, ${height - 80})`);
+
+  legend.append("text")
+    .attr("x", 0).attr("y", -8)
+    .style("font-size", "11px")
+    .style("fill", "#555")
+    .text("Magnitude");
+
+  [2, 5, 8].forEach((mag, i) => {
+    const r = magScale(mag);
+    const x = 15 + i * 55;
+    const y = 20;
+
+    legend.append("circle")
+      .datum(mag)               // ← bind the mag value
+      .attr("cx", x).attr("cy", y)
+      .attr("r", r)
+      .attr("fill", "none")
+      .attr("stroke", "#555")
+      .attr("stroke-width", 1);
+
+    legend.append("text")
+      .attr("x", x).attr("y", y + r + 12)
+      .attr("text-anchor", "middle")
+      .style("font-size", "10px")
+      .style("fill", "#555")
+      .text(mag);
+  });
+
+  return svg.node();
+}));
+```
+</div>
