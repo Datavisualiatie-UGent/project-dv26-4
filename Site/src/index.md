@@ -10,9 +10,6 @@ toc: false
 
 
 ---
-
-
-
 <style>
 
 
@@ -62,10 +59,12 @@ toc: false
   <h3>test </h3>
 
 ```js
-const data = await FileAttachment("data/earthquakes-2026-03-26_13-34-17_+0100.tsv").tsv();
-const world = await FileAttachment("data/world.geo.json").json();
+const data_raw = await FileAttachment("data/earthquakes-2026-03-26_13-34-17_+0100.tsv").tsv();
 const minYear = 1800;
+const data = data_raw.filter(d => +d.Year >= minYear);
+const world = await FileAttachment("data/world.geo.json").json();
 const maxYear = d3.max(data, d => +d.Year);
+
 const yearRange = view(Inputs.range([minYear, maxYear], {
   step: 1,
   value: maxYear,
@@ -73,7 +72,7 @@ const yearRange = view(Inputs.range([minYear, maxYear], {
   width: 300
 }));
 ```
-
+<!-- Toon de cijfers onder de slider -->
 <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 0.5rem;">
   <span><strong>${minYear}</strong></span>
   <span>Showing up to: <strong>${yearRange}</strong></span>
@@ -81,7 +80,7 @@ const yearRange = view(Inputs.range([minYear, maxYear], {
 </div>
 
 ```js
-// Datarange selecteren
+// Datarange selecteren, alle jaren die boven min jaar zitten en een magnitude hebben groter dan 0
 const filtered = data.filter(d => +d.Year <= yearRange && d.Mag && +d.Mag > 0);
 // Kleurschaal definiëren
 const colorScale = d3.scaleSequential()
@@ -182,7 +181,7 @@ display(resize((width) => {
     .text("Magnitude");
 
   [2, 5, 8].forEach((mag, i) => {
-    const r = magScale(mag);
+    const r = magScale(mag*0.1 );
     const x = 15 + i * 55;
     const y = 20;
 
