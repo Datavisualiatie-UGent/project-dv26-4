@@ -159,7 +159,7 @@ display(resize((width) => {
       g.selectAll("circle")
         .attr("r", d => magScale(+d.Mag*0.1) / event.transform.k);
       legend.selectAll("circle")
-        .attr("r", d => magScale(d) / event.transform.k);
+        .attr("r", d => magScale(d*0.1) / event.transform.k);
     })
     .on("end", () => svg.style("cursor", "grab"));
 
