@@ -1,6 +1,6 @@
 ---
 theme: dashboard
-title: Explore
+title: Are earthquakes random?
 toc: false
 ---
 
@@ -16,31 +16,39 @@ An earthquake occurs due to the release of energy from the Earth's crust, partic
   <h3>test </h3>
 
 ```js
+import {rangeInput} from "./components/rangeSlider.js";
+```
+
+```js
 const tectonicPlates = await FileAttachment("data/PB2002_boundaries.json").json();
-const tectonicUrl = await FileAttachment("data/Tectonic_plates_(2022).svg").url();
-const data_raw = await FileAttachment("data/earthquakes-2026-03-26_13-34-17_+0100.tsv").tsv();
+
 const minYear = 1800;
+
+const data_raw = await FileAttachment("data/earthquakes-2026-03-26_13-34-17_+0100.tsv").tsv();
 const data = data_raw.filter(d => +d.Year >= minYear);
-const world = await FileAttachment("data/world.geo.json").json();
+
 const maxYear = d3.max(data, d => +d.Year);
+const world = await FileAttachment("data/world.geo.json").json();
+
+
+
 const showTectonic = view(Inputs.toggle({label: "Show tectonic plates", value: false}));
-const yearRange = view(Inputs.range([minYear, maxYear], {
-  step: 1,
-  value: maxYear,
-  label: null,
-  width: 300
-}));
+const yearRange = view(rangeInput({min: 1800, max: 2026, step: 1, value: [minYear, maxYear]}));
+
 ```
 <!-- Toon de cijfers onder de slider -->
 <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 0.5rem;">
   <span><strong>${minYear}</strong></span>
-  <span>Showing up to: <strong>${yearRange}</strong></span>
+  Showing: <strong>${yearRange[0]}</strong> – <strong>${yearRange[1]}</strong>
   <span><strong>${maxYear}</strong></span>
 </div>
 
 ```js
+
+
 // Datarange selecteren, alle jaren die boven min jaar zitten en een magnitude hebben groter dan 0
-const filtered = data.filter(d => +d.Year <= yearRange && d.Mag && +d.Mag > 0);
+const filtered = data.filter(d => +d.Year >= yearRange[0] && +d.Year <= yearRange[1] && +d.Mag > 0);
+
 // Kleurschaal definiëren
 const colorScale = d3.scaleSequential()
   .domain([0, 10])
@@ -69,7 +77,7 @@ display(resize((width) => {
     .attr("fill", "#eee")
     .attr("stroke", "#999");
 
- // Tectonic overlay — fitted to exact projection bounds
+ // Plaatgrenzen
 if (showTectonic) {
   g.append("g")
     .attr("class", "tectonic")
@@ -100,10 +108,9 @@ if (showTectonic) {
     .join("circle")
     .attr("cx", d => projection([+d.Longitude, +d.Latitude])[0])
     .attr("cy", d => projection([+d.Longitude, +d.Latitude])[1])
-    .attr("r", d => magScale(+d.Mag*0.1))   // ← fixed, no event here
-    .attr("fill", "none")
-    .attr("stroke", d => colorScale(+d.Mag))
-    .attr("stroke-width", 1)
+    .attr("r", 2) // groote dots
+    .attr("fill", d => colorScale(+d.Mag))  // gevulde dots
+    .attr("stroke", "none")
     .attr("opacity", 0.7)
     .style("cursor", "pointer")
     .on("mouseover", (event, d) => {
@@ -129,9 +136,7 @@ if (showTectonic) {
       g.attr("transform", event.transform);
       svg.style("cursor", "grabbing");
       g.selectAll("circle")
-        .attr("r", d => magScale(+d.Mag*0.1) / event.transform.k);
-      legend.selectAll("circle")
-        .attr("r", d => magScale(d*0.1) / event.transform.k);
+        .attr("r", 2 / event.transform.k); // schaal bij zoomen
     })
     .on("end", () => svg.style("cursor", "grab"));
 

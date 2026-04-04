@@ -12,7 +12,7 @@ toc: false
 
 # test
 
-[move](example-dashboard)
+[link to other dashboard](example-dashboard)
 
 
 <style>

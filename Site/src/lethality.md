@@ -1,6 +1,6 @@
 ---
 theme: dashboard
-title: Example dashboard
+title: An earthquake, always deadly?
 toc: false
 ---
 
@@ -14,12 +14,6 @@ const count = data.length;
 const totalDeaths = d3.sum(data, d => +d.Deaths);
 const avgMag = d3.mean(data, d => +d.Mag);
 const cost = d3.sum(data, d => +d["Damage ($Mil)"]);
-const magRange = view(Inputs.range([1, 9], {
-  step: 1,
-  value: 5,
-  label: null,
-  width: 300
-}));
 ```
 ```js
 const filteredData = data_raw  
@@ -69,23 +63,41 @@ const yearlyStats = d3.rollups(
 </div>
 
 ```js
-Plot.plot({
+display(Plot.plot({
+  title: "Magnitude vs Casualties",
+  width: 800,
+  height: 400,
   inset: 8,
   grid: true,
   x: {
-    domain: [minYear, maxYear]
+    label: "Deaths →",
+    type: "log",
   },
   y: {
-    type: "log"
-  },
-  color: {
-    legend: true,
+    label: "↑ Magnitude",
+    domain: [0, 10]
   },
   marks: [
-    Plot.dot(filteredData, {x: "Year", y: "Deaths"})  
+    Plot.dot(data_raw.filter(d => +d.Mag > 0), {
+      x: d => +d.Deaths,
+      y: d => +d.Mag,
+      fill: "steelblue",
+      opacity: 0.5,
+      r: 3,
+      tip: true
+    })
   ]
-})
+}));
 ```
+```js
+const magRange = view(Inputs.range([1, 9], {
+  step: 1,
+  value: 5,
+  label: null,
+  width: 300
+}));
+```
+
 ```js
 Plot.plot({
   inset: 8,
