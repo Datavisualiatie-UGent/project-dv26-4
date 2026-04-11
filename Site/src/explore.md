@@ -13,7 +13,7 @@ An earthquake occurs due to the release of energy from the Earth's crust, partic
 </style>
 <div class="card" style="padding: 1rem;">
  <h2>Earthquake Map </h2>
-  <h3>test </h3>
+  <h3>You can zoom and interact with the dots </h3>
 
 ```js
 import {rangeInput} from "./components/rangeSlider.js";
@@ -140,44 +140,72 @@ if (showTectonic) {
     })
     .on("end", () => svg.style("cursor", "grab"));
 
+  // ─── Legend ───────────────────────────────────────────────────────────────
+const legendWidth = 180;
+const legendHeight = 12;
+const legendX = 16;
+const legendY = height - 50;
+
+const defs = svg.append("defs");
+const linearGradient = defs.append("linearGradient")
+  .attr("id", "mag-legend-gradient")
+  .attr("x1", "0%").attr("x2", "100%");
+
+// Sample the colorScale across [0, 10]
+const steps = 10;
+d3.range(steps + 1).forEach(i => {
+  linearGradient.append("stop")
+    .attr("offset", `${(i / steps) * 100}%`)
+    .attr("stop-color", colorScale(i));
+});
+
+const legend = svg.append("g")
+  .attr("transform", `translate(${legendX}, ${legendY})`);
+
+// Achtergrondvulling
+legend.append("rect")
+  .attr("x", -8).attr("y", -18)
+  .attr("width", legendWidth + 16).attr("height", legendHeight + 36)
+  .attr("rx", 6)
+  .attr("fill", "white")
+  .attr("opacity", 0.75);
+
+// Titel
+legend.append("text")
+  .attr("x", 0).attr("y", -4)
+  .attr("font-size", "11px")
+  .attr("font-weight", "600")
+  .attr("fill", "#333")
+  .text("Magnitude");
+
+// Gradient
+legend.append("rect")
+  .attr("width", legendWidth)
+  .attr("height", legendHeight)
+  .attr("rx", 3)
+  .style("fill", "url(#mag-legend-gradient)");
+
+// As ticks: 0, 2, 4, 6, 8, 10
+[0, 2, 4, 6, 8, 10].forEach(val => {
+  const xPos = (val / 10) * legendWidth;
+  legend.append("line")
+    .attr("x1", xPos).attr("x2", xPos)
+    .attr("y1", legendHeight).attr("y2", legendHeight + 4)
+    .attr("stroke", "#555").attr("stroke-width", 1);
+  legend.append("text")
+    .attr("x", xPos).attr("y", legendHeight + 14)
+    .attr("text-anchor", "middle")
+    .attr("font-size", "10px")
+    .attr("fill", "#444")
+    .text(val);
+});
+// ──────────────────────────────────────────────────────────────────────────
   svg.call(zoom);
 
   // Dubbelklik om zoom te resetten
   svg.on("dblclick.zoom", () => {
     svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity);
   });
-
-  // Size legend (vast, buiten zoomgroep)
-  const legend = svg.append("g")
-    .attr("transform", `translate(20, ${height - 80})`);
-
-  legend.append("text")
-    .attr("x", 0).attr("y", -8)
-    .style("font-size", "11px")
-    .style("fill", "#555")
-    .text("Magnitude");
-
-  [2, 5, 8].forEach((mag, i) => {
-    const r = magScale(mag*0.1 );
-    const x = 15 + i * 55;
-    const y = 20;
-
-    legend.append("circle")
-      .datum(mag)               // ← bind the mag value
-      .attr("cx", x).attr("cy", y)
-      .attr("r", r)
-      .attr("fill", "none")
-      .attr("stroke", "#555")
-      .attr("stroke-width", 1);
-
-    legend.append("text")
-      .attr("x", x).attr("y", y + r + 12)
-      .attr("text-anchor", "middle")
-      .style("font-size", "10px")
-      .style("fill", "#555")
-      .text(mag);
-  });
-
   return svg.node();
 }));
 ```
@@ -192,26 +220,6 @@ The Ring of Fire is a large belt with high tectonic activity, causing earthquake
 range
 ```
 
-
-
-<div class="grid grid-cols-4">
-  <div class="card">
-    <h2>Aantal aardbevingen</h2>
-    <span class="big">${count}</span>
-  </div>
-  <div class="card">
-    <h2>Aantal doden</h2>
-    <span class="big">${totalDeaths}</span>
-  </div>
-  <div class="card">
-    <h2>Gemiddelde magnitude</h2>
-    <span class="big">${avgMag?.toFixed(2)}</span>
-  </div>
-  <div class="card">
-    <h2>Totale kost ($ miljard)</h2>
-    <span class="big">${(cost / 1000).toFixed(3)}</span>
-  </div>
-</div>
 
 
 ```js

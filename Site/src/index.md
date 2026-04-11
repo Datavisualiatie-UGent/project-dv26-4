@@ -4,16 +4,21 @@ toc: false
 
 <div class="hero">
   <h1>Earthquakes</h1>
-  <h2>Welcome to your new app! Edit&nbsp;<code style="font-size: 90%;">src/index.md</code> to change this page.</h2>
-  <a href="https://observablehq.com/framework/getting-started">Get started<span style="display: inline-block; margin-left: 0.25rem;">↗︎</span></a>
+  <h2>A vast network of seismographs measure vibrations around the Earth and detect earthquakes. This website visualises the earthquakes and aims to show interesting trends.</h2>
+  <a href="https://www.ngdc.noaa.gov/hazel/view/hazards/earthquake/event-data">Link to the dataset<span style="display: inline-block; margin-left: 0.25rem;">↗︎</span></a>
 </div>
 
 ---
 
-# test
+# The location of earthquakes
 
-[link to other dashboard](example-dashboard)
+[Link to map](explore)
 
+# Lethality of earthquakes
+[Link to map](lethality)
+
+# Link with focal depth
+[Link to map](magnitude_damage)
 
 <style>
 .hero {
