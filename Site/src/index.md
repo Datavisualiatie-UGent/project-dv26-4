@@ -6,6 +6,7 @@ toc: false
   <h1>Earthquakes</h1>
   <h2>A vast network of seismographs measure vibrations around the Earth and detect earthquakes. This website visualises the earthquakes and aims to show interesting trends.</h2>
   <a href="https://www.ngdc.noaa.gov/hazel/view/hazards/earthquake/event-data">Link to the dataset<span style="display: inline-block; margin-left: 0.25rem;">↗︎</span></a>
+  <h2>The database includes only earthquakes classified as significant. An earthquake is considered significant if it results in fatalities, causes moderate damage (approximately $1 million or more), has a magnitude of 7.5 or higher, reaches a Modified Mercalli Intensity of X or greater, or generates a tsunami.</h2>
 </div>
 
 ---
