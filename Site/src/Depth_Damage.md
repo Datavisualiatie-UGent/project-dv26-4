@@ -75,7 +75,7 @@ display(Plot.plot({
         text: "label",
         frameAnchor: "top",
         dy: -10,
-        fill: "white",
+        fill: "grey",
         fontSize: 14,
         fontWeight: "bold"
     }
@@ -87,7 +87,7 @@ display(Plot.plot({
         text: "label",
         frameAnchor: "top",
         dy: -10,
-        fill: "white",
+        fill: "grey",
         fontSize: 14,
         fontWeight: "bold"
     }
