@@ -1,5 +1,5 @@
 ---
-title: Does depth unfluence damage?
+title: Does depth Influence damage?
 ---
 
 # Does depth influence damage?
@@ -27,52 +27,24 @@ const data = data_raw
   );
 ```
 ```js
-display(Plot.plot({
-  title: "Depth vs Deaths",
-  width: 800,
-  height: 500,
-  inset: 10,
-  x: {
-    label: "Depth (km) →",
-    grid: true
-  },
-  y: {
-    label: "↑ Deaths",
-    type: "log",
-    grid: true
-  },
-  color: {
-  label: "Magnitude",
-  type: "linear",
-  domain: [0, 10],
-  interpolate: t => d3.interpolateRdBu(1 - t),
-  legend: true
-  },
-  marks: [
-    Plot.dot(data, {
-      x: "Depth",
-      y: "Deaths",
-      fill: "Mag",
-      r: 4,
-      opacity: 0.65,
-      tip: true
-    }),
-    Plot.ruleX([70], {stroke: "white", strokeOpacity: 0.5})
-  ]
-}));
+const metric = view(Inputs.radio(
+  ["Deaths", "Damage"],
+  {label: "Choose impact metric", value: "Deaths"}
+));
 ```
 ```js
 display(Plot.plot({
-  title: "Depth vs Damage",
+  title: metric === "Deaths" ? "Depth vs Deaths" : "Depth vs Economic Damage",
   width: 800,
   height: 500,
   inset: 10,
   x: {
     label: "Depth (km) →",
-    grid: true
+    grid: true,
+    type: "log"
   },
   y: {
-    label: "↑ Damage ($Mil)",
+    label: metric === "Deaths" ? "↑ Deaths" : "↑ Damage ($Mil)",
     type: "log",
     grid: true
   },
@@ -84,15 +56,44 @@ display(Plot.plot({
     legend: true
   },
   marks: [
-    Plot.dot(data, {
-      x: "Depth",
-      y: "Damage",
-      fill: "Mag",
-      r: 4,
-      opacity: 0.65,
-      tip: true
-    }),
-    Plot.ruleX([70], {stroke: "white", strokeOpacity: 0.5})
+    Plot.dot(
+      data.filter(d => metric === "Deaths" ? d.Deaths > 0 : d.Damage > 0),
+      {
+        x: "Depth",
+        y: d => metric === "Deaths" ? d.Deaths : d.Damage,
+        fill: "Mag",
+        r: 4,
+        opacity: 0.5,
+        tip: true
+      }
+    ),
+    Plot.ruleX([70], {stroke: "white", strokeOpacity: 0.5}),
+    Plot.text(
+    [{x: 50, label: "← Shallow"}],
+    {
+        x: "x",
+        text: "label",
+        frameAnchor: "top",
+        dy: -10,
+        fill: "white",
+        fontSize: 14,
+        fontWeight: "bold"
+    }
+    ),
+    Plot.text(
+    [{x: 110, label: "Intermediate →"}],
+    {
+        x: "x",
+        text: "label",
+        frameAnchor: "top",
+        dy: -10,
+        fill: "white",
+        fontSize: 14,
+        fontWeight: "bold"
+    }
+    )
   ]
 }));
 ```
+
+
