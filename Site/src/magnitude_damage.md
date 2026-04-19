@@ -39,22 +39,40 @@ display(Plot.plot({
   inset: 8,
   grid: true,
   x: {
-    label: "Depth →",
-    type: "log",
+    label: "Depth (km) →",
+    type: "log"
   },
   y: {
     label: "↑ Magnitude",
     domain: [0, 10]
   },
+  color: {
+    label: "Deaths",
+    type: "log",
+    scheme: "reds",
+    legend: true
+  },
   marks: [
-    Plot.dot(data_raw.filter(d => +d.Mag > 0), {
-      x: d => +d["Focal Depth (km)"],
-      y: d => +d.Mag,
-      fill: "steelblue",
-      opacity: 0.5,
-      r: 3,
-      tip: true
-    })
+    Plot.dot(
+      data_raw.filter(d =>
+        +d.Year >= minYear &&
+        +d.Mag > 0 &&
+        +d["Focal Depth (km)"] > 0 &&
+        +d.Deaths > 0
+      ),
+      {
+        x: d => +d["Focal Depth (km)"],
+        y: d => +d.Mag,
+        fill: d => +d.Deaths,
+        opacity: 0.7,
+        r: 4,
+        tip: true,
+        title: d => `Year: ${d.Year}
+Magnitude: ${d.Mag}
+Depth: ${d["Focal Depth (km)"]} km
+Deaths: ${d.Deaths}`
+      }
+    )
   ]
 }));
 ```
