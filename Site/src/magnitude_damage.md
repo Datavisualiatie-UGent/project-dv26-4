@@ -1,78 +1,90 @@
 ---
-title: Same magnitude, same damage?
+title: Same magnitude, same impact?
 ---
 
-# Same magnitude, same damage?
+# Same magnitude, same impact?
 
-plot about magnitude, damages, casualties
+The magnitude is a the parameter that is used the most to describe an impact of a earthquake. Is this a good parameter to do so?
 
 ```js
 const data_raw = await FileAttachment("data/earthquakes-2026-03-26_13-34-17_+0100.tsv").tsv();
+
 const minYear = 1800;
-const data = data_raw.filter(d => +d.Year >= minYear && d.Mag && +d.Mag > 0);
-const maxYear = d3.max(data, d => +d.Year);
-const count = data.length;
-const totalDeaths = d3.sum(data, d => +d.Deaths);
-const avgMag = d3.mean(data, d => +d.Mag);
-const cost = d3.sum(data, d => +d["Damage ($Mil)"]);
+
+const data = data_raw
+  .map(d => ({
+    Year: +d.Year,
+    Mag: +d.Mag,
+    Deaths: +d.Deaths,
+    Damage: +d["Damage ($Mil)"],
+    Location: d.Location
+  }))
+  .filter(d =>
+    d.Year >= minYear &&
+    !isNaN(d.Mag) &&
+    d.Mag > 0
+  );
 ```
 ```js
-const filteredData = data_raw  
-  .filter(d =>
-    +d.Year >= minYear &&
-    d.Mag &&
-    d.Deaths &&
-    +d.Deaths > 0
-  )
+const metric = view(Inputs.radio(
+  ["Deaths", "Damage"],
+  {label: "Show distribution of", value: "Deaths"}
+));
+```
+```js
+const plotData = data
   .map(d => ({
     ...d,
-    Year: +d.Year,
-    Deaths: +d.Deaths
-  }));
+    Impact: metric === "Deaths" ? d.Deaths : d.Damage,
+    MagClass:
+      d.Mag < 5 ? "5 or less" :
+      d.Mag < 6 ? "5–6" :
+      d.Mag < 7 ? "6–7" :
+      d.Mag < 8 ? "7–8" :
+      "8 or more"
+  }))
+  .filter(d => !isNaN(d.Impact) && d.Impact > 0);
 ```
 
 ```js
 display(Plot.plot({
-  title: "Magnitude vs focal depth",
-  width: 800,
-  height: 400,
-  inset: 8,
-  grid: true,
+  title: metric === "Deaths"
+    ? "Distribution of deaths by magnitude class"
+    : "Distribution of economic damage by magnitude class",
+  width: 850,
+  height: 500,
+  marginLeft: 70,
   x: {
-    label: "Depth (km) →",
-    type: "log"
+    label: "Magnitude class →"
   },
   y: {
-    label: "↑ Magnitude",
-    domain: [0, 10]
+    label: metric === "Deaths" ? "↑ Deaths" : "↑ Damage ($Mil)",
+    type: "log",
+    grid: true,
+    tickFormat: d3.format("~s")
   },
   color: {
-    label: "Deaths",
-    type: "log",
-    scheme: "reds",
-    legend: true
+    legend: false
   },
   marks: [
-    Plot.dot(
-      data_raw.filter(d =>
-        +d.Year >= minYear &&
-        +d.Mag > 0 &&
-        +d["Focal Depth (km)"] > 0 &&
-        +d.Deaths > 0
-      ),
-      {
-        x: d => +d["Focal Depth (km)"],
-        y: d => +d.Mag,
-        fill: d => +d.Deaths,
-        opacity: 0.7,
-        r: 4,
-        tip: true,
-        title: d => `Year: ${d.Year}
+    Plot.boxY(plotData, {
+      x: "MagClass",
+      y: "Impact",
+      fill: "steelblue"
+    }),
+    Plot.dot(plotData, {
+      x: "MagClass",
+      y: "Impact",
+      fill: "grey",
+      opacity: 0.18,
+      r: 2,
+      jitter: 0.25,
+      tip: true,
+      title: d => `Location: ${d.Location || "Unknown"}
 Magnitude: ${d.Mag}
-Depth: ${d["Focal Depth (km)"]} km
-Deaths: ${d.Deaths}`
-      }
-    )
+Deaths: ${isNaN(d.Deaths) ? "?" : d.Deaths}
+Damage ($Mil): ${isNaN(d.Damage) ? "?" : d.Damage}`
+    })
   ]
 }));
 ```

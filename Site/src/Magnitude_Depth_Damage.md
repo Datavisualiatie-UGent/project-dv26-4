@@ -4,9 +4,7 @@ title: Depth, magnitude and impact
 
 # Depth, magnitude and impact
 
-This page shows earthquake depth and magnitude in two ways.  
-The first plot shows where earthquakes are concentrated.  
-The second plot highlights impact, while earthquakes with zero recorded deaths or damage are faded into the background.
+Depth, magnitude, damage and deaths are key factors in describing earthquakes. Is there any relation between these factors?
 
 ```js
 const data_raw = await FileAttachment("data/earthquakes-2026-03-26_13-34-17_+0100.tsv").tsv();
@@ -30,8 +28,6 @@ const data = data_raw
     d.Mag > 0
   );
 ```
-
-
 
 ```js
 const plotData = data.map(d => ({
