@@ -4,8 +4,9 @@ title: Depth, magnitude and impact
 
 # Depth, magnitude and impact
 
-This interactive plot shows how earthquake magnitude relates to focal depth.  
-The color of each dot can be switched between fatalities and economic damage.
+This page shows earthquake depth and magnitude in two ways.  
+The first plot shows where earthquakes are concentrated.  
+The second plot highlights impact, while earthquakes with zero recorded deaths or damage are faded into the background.
 
 ```js
 const data_raw = await FileAttachment("data/earthquakes-2026-03-26_13-34-17_+0100.tsv").tsv();
@@ -29,26 +30,23 @@ const data = data_raw
     d.Mag > 0
   );
 ```
+
+
+
 ```js
-const colorMetric = view(Inputs.radio(
-  ["Deaths", "Damage"],
-  {label: "Color dots by", value: "Deaths"}
-));
-```
-```js
-const filtered = data.filter(d =>
-  colorMetric === "Deaths"
-    ? !isNaN(d.Deaths) && d.Deaths > 0
-    : !isNaN(d.Damage) && d.Damage > 0
-);
+const plotData = data.map(d => ({
+  ...d,
+  Impact: colorMetric === "Deaths" ? +d.Deaths : +d.Damage
+}));
+
+const positiveImpact = plotData.filter(d => !isNaN(d.Impact) && d.Impact > 0);
+const zeroImpact = plotData.filter(d => isNaN(d.Impact) || d.Impact === 0);
 ```
 ```js
 display(Plot.plot({
-  title: colorMetric === "Deaths"
-    ? "Magnitude vs Depth, colored by deaths"
-    : "Magnitude vs Depth, colored by economic damage",
+  title: "Earthquake density in depth–magnitude space",
   width: 850,
-  height: 520,
+  height: 500,
   inset: 10,
   x: {
     label: "Depth (km) →",
@@ -60,35 +58,25 @@ display(Plot.plot({
     domain: [2.5, 10],
     grid: true
   },
-  color: colorMetric === "Deaths"
-    ? {
-        label: "Deaths",
-        type: "log",
-        scheme: "reds",
-        legend: true
-      }
-    : {
-        label: "Damage ($Mil)",
-        type: "log",
-        scheme: "blues",
-        legend: true
-      },
+  color: {
+    label: "Number of earthquakes",
+    scheme: "viridis",
+    legend: true
+  },
   marks: [
-    Plot.dot(filtered, {
-      x: "Depth",
-      y: "Mag",
-      fill: d => colorMetric === "Deaths" ? d.Deaths : d.Damage,
-      r: 4,
-      opacity: 0.65,
-      tip: true,
-      title: d => `Location: ${d.Location || "Unknown"}
-Year: ${d.Year}
-Depth: ${d.Depth} km
-Magnitude: ${d.Mag}
-Deaths: ${isNaN(d.Deaths) ? "?" : d.Deaths}
-Damage ($Mil): ${isNaN(d.Damage) ? "?" : d.Damage}`
-    }),
-    Plot.ruleX([70], {
+    Plot.dot(
+      data,
+      Plot.hexbin(
+        {fill: "count"},
+        {
+          x: "Depth",
+          y: "Mag",
+          binWidth: 18,
+          tip: true
+        }
+      )
+    ),
+    Plot.ruleX([70, 300], {
       stroke: "white",
       strokeOpacity: 0.7,
       strokeWidth: 2
@@ -106,7 +94,119 @@ Damage ($Mil): ${isNaN(d.Damage) ? "?" : d.Damage}`
       }
     ),
     Plot.text(
-      [{x: 110, label: "Intermediate →"}],
+      [{x: 150, label: "← Intermediate →"}],
+      {
+        x: "x",
+        text: "label",
+        frameAnchor: "top",
+        dy: -10,
+        fill: "grey",
+        fontSize: 14,
+        fontWeight: "bold"
+      }
+    ),
+    Plot.text(
+      [{x: 400, label: "Deep →"}],
+      {
+        x: "x",
+        text: "label",
+        frameAnchor: "top",
+        dy: -10,
+        fill: "grey",
+        fontSize: 14,
+        fontWeight: "bold"
+      }
+    )
+  ]
+}));
+```
+
+```js
+const colorMetric = view(Inputs.radio(
+  ["Deaths", "Damage"],
+  {label: "Color dots by", value: "Deaths"}
+));
+```
+
+```js
+display(Plot.plot({
+  title: colorMetric === "Deaths"
+    ? "Magnitude vs depth, with deaths highlighted"
+    : "Magnitude vs depth, with economic damage highlighted",
+  width: 850,
+  height: 520,
+  inset: 10,
+  x: {
+    label: "Depth (km) →",
+    type: "log",
+    grid: true
+  },
+  y: {
+    label: "↑ Magnitude",
+    domain: [2.5, 10],
+    grid: true
+  },
+  color: {
+    label: colorMetric === "Deaths" ? "Deaths" : "Damage ($Mil)",
+    type: "log",
+    scheme: colorMetric === "Deaths" ? "reds" : "blues",
+    legend: true
+  },
+  marks: [
+    Plot.dot(zeroImpact, {
+      x: "Depth",
+      y: "Mag",
+      stroke: "grey",
+      strokeOpacity: 0.2,
+      fill: "grey",
+      fillOpacity: 0.08,
+      r: 3
+    }),
+    Plot.dot(positiveImpact, {
+      x: "Depth",
+      y: "Mag",
+      fill: d => d.Impact,
+      r: 4,
+      opacity: 0.75,
+      tip: true,
+      title: d => `Location: ${d.Location || "Unknown"}
+Year: ${d.Year}
+Depth: ${d.Depth} km
+Magnitude: ${d.Mag}
+Deaths: ${isNaN(d.Deaths) ? "?" : d.Deaths}
+Damage ($Mil): ${isNaN(d.Damage) ? "?" : d.Damage}`
+    }),
+    Plot.ruleX([70, 300], {
+      stroke: "white",
+      strokeOpacity: 0.7,
+      strokeWidth: 2
+    }),
+    Plot.text(
+      [{x: 50, label: "← Shallow"}],
+      {
+        x: "x",
+        text: "label",
+        frameAnchor: "top",
+        dy: -10,
+        fill: "grey",
+        fontSize: 14,
+        fontWeight: "bold"
+      }
+    ),
+    Plot.text(
+      [{x: 150, label: "← Intermediate →"}],
+      {
+        x: "x",
+        text: "label",
+        frameAnchor: "top",
+        dy: -10,
+        fill: "grey",
+        fontSize: 14,
+        fontWeight: "bold"
+      }
+    ),
+    Plot.text(
+      [{x: 400, label: "Deep →"}],
       {
         x: "x",
         text: "label",
