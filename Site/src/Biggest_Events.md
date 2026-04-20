@@ -120,7 +120,7 @@ ${metric}: ${d3.format(",")(d.Impact)}`
       text: d => d3.format("~s")(d.Impact),
       dx: 8,
       textAnchor: "start",
-      fill: "black"
+      fill: "white"
     })
   ]
 }));
