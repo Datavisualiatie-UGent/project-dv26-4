@@ -8,6 +8,14 @@ toc: false
 
   The database includes only earthquakes classified as significant. An earthquake is considered significant if it results in fatalities, causes moderate damage (approximately $1 million or more), has a magnitude of 7.5 or higher, reaches a Modified Mercalli Intensity of X or greater, or generates a tsunami.</h2>
   <a href="https://www.ngdc.noaa.gov/hazel/view/hazards/earthquake/event-data">Link to the dataset<span style="display: inline-block; margin-left: 0.25rem;">↗︎</span></a>
+  <h2>Idea
+  Explore -> map (where, highlight big ones ...)
+  Time -> improvement in detection
+  Boxplots -> depth and magnitude relevant, but not everything
+  Depth and magnitude -> relation + trends in damage/deaths
+  Region -> Show the human factor (has to be done)
+  conclusion -> many factors add up to the impact of an earthquake
+  </h2>
 </div>
 
 ---

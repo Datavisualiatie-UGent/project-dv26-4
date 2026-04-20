@@ -15,6 +15,7 @@ const data = data_raw
   .map(d => ({
     Year: +d.Year,
     Mag: +d.Mag,
+    Depth: +d["Focal Depth (km)"],
     Deaths: +d.Deaths,
     Damage: +d["Damage ($Mil)"],
     Location: d.Location
@@ -41,7 +42,12 @@ const plotData = data
       d.Mag < 6 ? "5–6" :
       d.Mag < 7 ? "6–7" :
       d.Mag < 8 ? "7–8" :
-      "8 or more"
+      "8 or more",
+    DepthClass:
+      isNaN(d.Depth) ? null :
+      d.Depth < 70 ? "0–70 km" :
+      d.Depth < 300 ? "70–300 km" :
+      "> 300 km"
   }))
   .filter(d => !isNaN(d.Impact) && d.Impact > 0);
 ```
@@ -82,9 +88,60 @@ display(Plot.plot({
       tip: true,
       title: d => `Location: ${d.Location || "Unknown"}
 Magnitude: ${d.Mag}
+Depth: ${isNaN(d.Depth) ? "?" : d.Depth} km
 Deaths: ${isNaN(d.Deaths) ? "?" : d.Deaths}
 Damage ($Mil): ${isNaN(d.Damage) ? "?" : d.Damage}`
     })
+  ]
+}));
+```
+
+```js
+display(Plot.plot({
+  title: metric === "Deaths"
+    ? "Distribution of deaths by depth class"
+    : "Distribution of economic damage by depth class",
+  width: 850,
+  height: 500,
+  marginLeft: 70,
+  x: {
+    label: "Depth class →"
+  },
+  y: {
+    label: metric === "Deaths" ? "↑ Deaths" : "↑ Damage ($Mil)",
+    type: "log",
+    grid: true,
+    tickFormat: d3.format("~s")
+  },
+  color: {
+    legend: false
+  },
+  marks: [
+    Plot.boxY(
+      plotData.filter(d => d.DepthClass !== null),
+      {
+        x: "DepthClass",
+        y: "Impact",
+        fill: "darkgreen"
+      }
+    ),
+    Plot.dot(
+      plotData.filter(d => d.DepthClass !== null),
+      {
+        x: "DepthClass",
+        y: "Impact",
+        fill: "grey",
+        opacity: 0.18,
+        r: 2,
+        jitter: 0.25,
+        tip: true,
+        title: d => `Location: ${d.Location || "Unknown"}
+Magnitude: ${d.Mag}
+Depth: ${isNaN(d.Depth) ? "?" : d.Depth} km
+Deaths: ${isNaN(d.Deaths) ? "?" : d.Deaths}
+Damage ($Mil): ${isNaN(d.Damage) ? "?" : d.Damage}`
+      }
+    )
   ]
 }));
 ```
