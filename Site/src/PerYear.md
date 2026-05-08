@@ -68,15 +68,39 @@ display(Plot.plot({
     domain: classes
   },
 
-  marks: [
-    Plot.barY(grouped, {
-      x: "x",
-      y: "Count",
-      fill: "MagnitudeClass",
-      title: d =>
-        `${d.Period}-${d.Period + 9}
+marks: [
+  Plot.barY(grouped, {
+    x: "x",
+    y: "Count",
+    fill: "MagnitudeClass",
+    title: d =>
+      `${d.Period}-${d.Period + 9}
 ${d.MagnitudeClass}: ${d.Count}`
-    })
-  ]
+  }),
+
+  Plot.ruleX([1900, 1960, 1990], {
+    stroke: "white",
+    strokeOpacity: 0.5,
+    strokeDasharray: "4,4"
+  }),
+
+  Plot.text(
+    [
+      {x: 1900, y: 350, label: "Expansion of global\nseismograph networks"},
+      {x: 1960, y: 350, label: "WWSSN introduced"},
+      {x: 1990, y: 350, label: "Digital seismic\nmonitoring"}
+    ],
+    {
+      x: "x",
+      y: "y",
+      text: "label",
+      textAnchor: "start",
+      dx: 5,
+      dy: -5,
+      fill: "white",
+      fontSize: 11
+    }
+  )
+]
 }));
 ```
