@@ -52,7 +52,7 @@ const filtered = data.filter(d => +d.Year >= yearRange[0] && +d.Year <= yearRang
 // Kleurschaal definiëren
 const colorScale = d3.scaleSequential()
   .domain([0, 10])
-  .interpolator(t => d3.interpolateRdBu(1 - t));
+  .interpolator(d3.interpolatePlasma);
 const magScale = d3.scaleSqrt().domain([0, 10]).range([1, 15]);
 
 // Dynamische kaartgrootte
@@ -91,15 +91,16 @@ if (showTectonic) {
     .attr("opacity", 0.7);
 }
   // Tooltip 
-  const tooltip = d3.select("body").append("div")
-    .style("position", "absolute")
-    .style("background", "white")
-    .style("border", "1px solid #ccc")
-    .style("border-radius", "6px")
-    .style("padding", "8px 12px")
-    .style("font-size", "13px")
-    .style("pointer-events", "none")
-    .style("opacity", 0);
+const tooltip = d3.select("body").append("div")
+  .style("position", "absolute")
+  .style("background", "white")
+  .style("border", "1px solid #ccc")
+  .style("border-radius", "6px")
+  .style("padding", "8px 12px")
+  .style("font-size", "13px")
+  .style("color", "#333")   // darker text
+  .style("pointer-events", "none")
+  .style("opacity", 0);
 
   // Elementen toevoegen op kaart
     g.append("g")
@@ -118,8 +119,14 @@ if (showTectonic) {
         .html(`
             <strong>Magnitude:</strong> ${d.Mag}<br/>
             <strong>Year:</strong> ${d.Year}<br/>
-            <strong>Deaths:</strong> ${d["Deaths"] || "?"}<br/>
-            <strong>Damage ($Mil):</strong> ${d["Damage ($Mil)"] || "?"}<br/>
+            <strong>Deaths:</strong> ${
+              d["Deaths"] === "" || d["Deaths"] == null ? "/" : d["Deaths"]
+            }<br/>
+            <strong>Damage ($Mil):</strong> ${
+              d["Damage ($Mil)"] === "" || d["Damage ($Mil)"] == null
+                ? "/"
+                : d["Damage ($Mil)"]
+            }<br/>
         `);
     })
     .on("mousemove", (event) => {
