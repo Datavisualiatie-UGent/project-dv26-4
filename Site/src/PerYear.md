@@ -13,36 +13,70 @@ const data_raw = await FileAttachment("data/earthquakes-2026-03-26_13-34-17_+010
 
 const minYear = 1800;
 
+const classes = ["M < 6", "M 6–7.9", "M ≥ 8"];
+
 const data = data_raw
   .filter(d => +d.Year >= minYear && d.Mag)
-  .map(d => ({
-    Year: +d.Year
-  }));
+  .map(d => {
+    const mag = +d.Mag;
+
+    return {
+      Period: Math.floor(+d.Year / 10) * 10,
+      MagnitudeClass:
+        mag < 6 ? "M < 6" :
+        mag < 8 ? "M 6–7.9" :
+        "M ≥ 8"
+    };
+  });
+
+const spacing = 2.5;
+
+const grouped = Array.from(
+  d3.rollup(
+    data,
+    v => v.length,
+    d => d.Period,
+    d => d.MagnitudeClass
+  ),
+  ([Period, values]) =>
+    classes.map((MagnitudeClass, i) => ({
+      Period,
+      MagnitudeClass,
+      Count: values.get(MagnitudeClass) ?? 0,
+      x: Period + (i - 1) * spacing
+    }))
+).flat();
 
 display(Plot.plot({
-  title: "Number of earthquakes per 5-year period",
-  width: 800,
-  height: 400,
+  title: "Number of earthquakes per 10-year period by magnitude",
+  width: 1000,
+  height: 450,
+
   x: {
-    label: "Year →",
-    grid: true
+  label: "Year →",
+  ticks: d3.range(1800, 2030, 10),
+  tickFormat: d3.format("d")
   },
+
   y: {
     label: "↑ Number of earthquakes",
     grid: true
   },
+
+  color: {
+    legend: true,
+    domain: classes
+  },
+
   marks: [
-    Plot.rectY(
-      data,
-      Plot.binX(
-        {y: "count"},
-        {
-          x: "Year",
-          thresholds: d3.range(1800, 2026, 5),
-          fill: "steelblue"
-        }
-      )
-    )
+    Plot.barY(grouped, {
+      x: "x",
+      y: "Count",
+      fill: "MagnitudeClass",
+      title: d =>
+        `${d.Period}-${d.Period + 9}
+${d.MagnitudeClass}: ${d.Count}`
+    })
   ]
 }));
 ```
