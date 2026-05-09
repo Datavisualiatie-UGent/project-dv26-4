@@ -1,13 +1,12 @@
 ---
-theme: dashboard
+#theme: dashboard
 title: Are earthquakes random?
 toc: false
 ---
 
 # Are earthquakes random?
 
-## What is an earthquake?
-An earthquake occurs due to the release of energy from the Earth's crust, particulary present at the boundaries of tectonic plates
+Earthquakes most often happen at the boundaries between tectonic plates. These plates are continuously moving with a speed of 1-10 cm/year and can be tracked via satellite images! This movement causes energy buildup at their boundaries, resulting in earthquakes. This causes true earthquake hotspots like Turkey and Indonesia.
 
 
 </style>
@@ -217,70 +216,3 @@ legend.append("rect")
 }));
 ```
 </div>
-
-## The Ring of Fire
-The Ring of Fire is a large belt with high tectonic activity, causing earthquakes and volcanoes
-
-## Benelux earthquakes?
-
-```js
-range
-```
-
-
-
-```js
-Plot.plot({
-  inset: 8,
-  grid: true,
-  color: { legend: true },
-  marks: [
-    Plot.dot(filteredData, {
-      x: "Year",
-      y: "Deaths",
-      tip: true
-    })
-  ]
-})
-y: { type: "log" }
-```
-
-```js
-Plot.plot({
-  inset: 8,
-  grid: true,
-  x: {
-    domain: range
-  },
-  y: {
-    type: "log"
-  },
-  color: { legend: true },
-  marks: [
-    // Original dots
-    Plot.dot(filteredData, {
-      x: "Year",
-      y: d => +d.Deaths,
-      stroke: "gray",
-      opacity: 0.5,
-      tip: true
-    }),
-
-    // Mean deaths per year (line)
-    Plot.line(yearlyStats, {
-      x: "Year",
-      y: "meanDeaths",
-      stroke: "blue",
-      strokeWidth: 2
-    }),
-
-    // Total deaths per year (line)
-    Plot.line(yearlyStats, {
-      x: "Year",
-      y: "totalDeaths",
-      stroke: "red",
-      strokeWidth: 2
-    })
-  ]
-})
-```

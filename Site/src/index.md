@@ -1,5 +1,6 @@
 ---
 toc: false
+
 ---
 
 <div class="hero">
@@ -8,34 +9,36 @@ toc: false
 
   The database includes only earthquakes classified as significant. An earthquake is considered significant if it results in fatalities, causes moderate damage (approximately $1 million or more), has a magnitude of 7.5 or higher, reaches a Modified Mercalli Intensity of X or greater, or generates a tsunami.</h2>
   <a href="https://www.ngdc.noaa.gov/hazel/view/hazards/earthquake/event-data">Link to the dataset<span style="display: inline-block; margin-left: 0.25rem;">↗︎</span></a>
-  <h2>Idea
-  Explore -> map (where, highlight big ones ...)
-  Time -> improvement in detection
-  Boxplots -> depth and magnitude relevant, but not everything
-  Depth and magnitude -> relation + trends in damage/deaths
-  Region -> Show the human factor (has to be done)
-  conclusion -> many factors add up to the impact of an earthquake
-  </h2>
 </div>
-
 ---
 
-# The location of earthquakes
+## What is an earthquake?
+An earthquake occurs due to the release of energy from the Earth's crust, particulary present at the boundaries of tectonic plates. Movement of the Earth's crust continuously builds up energy, eventually releasing through seismic waves, resulting in an earthquake. This release of energy happens at so called faults, and can happen in 3 types (see image).
 
-[Link to map](explore)
+![different styles of earthquakes](Earthquake.gif "earthquake")
+*source: https://scienceexchange.caltech.edu/topics/earthquakes/what-causes-earthquakes*
+
+# The location of earthquakes
+Earthquakes do not appear randomly, this page explains where earthquakes have mostly occured and why.
+
+[Link](explore)
 
 # Lethality of earthquakes
-[Link to map](lethality)
+Not every earthquake is as deadly, this of course has to do with the magnitude. But how great is the correlation between magnitude and deadliness?
+
+[Link](lethality)
 
 # Link with focal depth
-[Link to map](magnitude_damage)
+Earthquakes do not originate from the surface. They start from points deeper inside the crust and send waves upwards, what is the effect of this depth on the damages and casualties?
+
+[Link](magnitude_damage)
 
 <style>
 .hero {
   display: flex;
   flex-direction: column;
   align-items: flex-start; 
-  margin: 4rem 0 8rem;
+  margin: 4rem 0 2rem;
   text-align: left;          
   max-width: 800px;          
 }
@@ -61,6 +64,39 @@ toc: false
   font-weight: 500;
   line-height: 1.5;
   color: var(--theme-foreground-muted);
+}
+
+body, #observablehq-main, .observablehq--block {
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.text-image-row {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.text-image-row p {
+  flex: 1;
+}
+
+.text-image-row figure {
+  flex: 0 0 auto;
+  max-width: 380px;
+  margin: 0;
+}
+
+.text-image-row img {
+  width: 100%;
+  border-radius: 6px;
+}
+
+.text-image-row figcaption {
+  font-size: 12px;
+  color: var(--theme-foreground-muted);
+  margin-top: 0.4rem;
 }
 
 @media (min-width: 640px) {
