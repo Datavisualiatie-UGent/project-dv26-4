@@ -131,7 +131,7 @@ const impact_data = data_raw2
 
 ## Frequency of earthquakes
 
-The rule of thumb for earthquakes is that the frequency of the earthquake is inversely proportional with its magnitude. With our data set this does not hold up due to the constriction that every earthquake must have damage or casualties.
+The most frequent earthquakes in our dataset (which only includdes earthquakes with casualties and/or damages) fall between a magnitude of 6 and 7. The general rule of thumb is that for every increase in magnitude (= 10x increase in amplitude) of an earthquake, the frequency drops tenfold. Our dataset thus shows the 6-7 range earthquakes occur frequently enough and cause damage often enough to dominate the dataset. With heavier earthquakes happeningen less often, and lighter earthquakes not causing as much damage. 
 
 ```js
 const pyramidData = Array.from(
@@ -266,6 +266,9 @@ display(Plot.plot({
 
 
 ## What earthquakes exactly?
+
+Zooming into the top 10 earthquakes gives a clearer insight in the distribution of the damages. Interestingly, all but one (Tangshan) earthquakes occured on plate boundaries.
+
 ```js
 display(Plot.plot({
   title: metric === "Deaths"

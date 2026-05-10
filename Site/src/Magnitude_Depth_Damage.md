@@ -4,7 +4,9 @@ title: Depth, magnitude and impact
 
 # Depth, magnitude and impact
 
-Depth, magnitude, damage and deaths are key factors in describing earthquakes. Is there any relation between these factors?
+Depth, magnitude, damage and deaths are key factors in describing earthquakes. Deeper earthquakes travel through more ground and are more spread out at the surface, thus reducing their consequences.
+
+The following graph shows the relation between magnitude and the depth from which an earthquake originates. When seismometer density is too low to estimate an accurate depth, a default value of 10 or 33 km is often used according to the [USGS](https://www.usgs.gov/faqs/why-do-so-many-earthquakes-occur-a-depth-10km)
 
 ```js
 const data_raw = await FileAttachment("data/earthquakes-2026-03-26_13-34-17_+0100.tsv").tsv();
@@ -78,6 +80,30 @@ display(Plot.plot({
       strokeWidth: 2
     }),
     Plot.text(
+      [{x: 10, label: "default shallow value"}],
+      {
+        x: "x",
+        text: "label",
+        frameAnchor: "bottom",  // changed from "top"
+        dy: 30,                  // changed from -10
+        fill: "grey",
+        fontSize: 14,
+        fontWeight: "bold"
+      }
+    ),
+    Plot.text(
+      [{x: 33, label: "default deep value"}],
+      {
+        x: "x",
+        text: "label",
+        frameAnchor: "bottom",  // changed from "top"
+        dy: 30,                  // changed from -10
+        fill: "grey",
+        fontSize: 14,
+        fontWeight: "bold"
+      }
+    ),
+    Plot.text(
       [{x: 50, label: "← Shallow"}],
       {
         x: "x",
@@ -116,7 +142,8 @@ display(Plot.plot({
   ]
 }));
 ```
-
+## Depth & damage
+The most impactful earthquakes occured near the surface, minimally spreading their energy and causing heavy shaking.
 ```js
 const colorMetric = view(Inputs.radio(
   ["Deaths", "Damage"],

@@ -43,7 +43,7 @@ The dataset mostly uses the **moment magnitude** (Mw) scale. The seismic moment 
 
 ## Correlation between magnitude and casualties?
 
-A higher magnitude increases the chance of high casualties
+A higher magnitude increases the chance of high casualties, but a high magnitude does not exclude few casualties. 
 
 ```js
 display(Plot.plot({
