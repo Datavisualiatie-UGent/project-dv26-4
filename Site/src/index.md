@@ -21,7 +21,7 @@ An earthquake occurs due to the release of energy from the Earth's crust, partic
 # The location of earthquakes
 Earthquakes do not appear randomly, this page explains where earthquakes have mostly occured and why.
 
-[Link](explore)
+[Link](a_explore)
 
 # Lethality of earthquakes
 Not every earthquake is as deadly, this of course has to do with the magnitude. But how great is the correlation between magnitude and deadliness?
@@ -31,7 +31,13 @@ Not every earthquake is as deadly, this of course has to do with the magnitude. 
 # Link with focal depth
 Earthquakes do not originate from the surface. They start from points deeper inside the crust and send waves upwards, what is the effect of this depth on the damages and casualties?
 
-[Link](magnitude_damage)
+[Link](Magnitude_Depth_Damage)
+
+# Do a few earthquakes dominate impact?
+
+Earthquake impact is not evenly distributed. This page shows how earthquake records have changed through time, which magnitudes occur most often, and why a small number of devastating earthquakes account for a large share of total deaths and damage.
+
+[Link](Biggest_Events)
 
 <style>
 .hero {

@@ -107,7 +107,7 @@ const plotData = impact_data
     ...d,
     Impact: metric === "Deaths" ? d.Deaths : d.Damage,
     MagClass:
-      d.Mag < 5 ? "5 or fewer" :
+      d.Mag < 5 ? "4.9 or lower" :
       d.Mag < 6 ? "5–5.9" :
       d.Mag < 7 ? "6–6.9" :
       d.Mag < 8 ? "7–7.9" :
