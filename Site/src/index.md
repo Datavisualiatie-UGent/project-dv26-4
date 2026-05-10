@@ -10,7 +10,7 @@ toc: false
   The database includes only earthquakes classified as significant. An earthquake is considered significant if it results in fatalities, causes moderate damage (approximately $1 million or more), has a magnitude of 7.5 or higher, reaches a Modified Mercalli Intensity of X or greater, or generates a tsunami.</h2>
   <a href="https://www.ngdc.noaa.gov/hazel/view/hazards/earthquake/event-data">Link to the dataset<span style="display: inline-block; margin-left: 0.25rem;">↗︎</span></a>
 </div>
----
+
 
 ## What is an earthquake?
 An earthquake occurs due to the release of energy from the Earth's crust, particulary present at the boundaries of tectonic plates. Movement of the Earth's crust continuously builds up energy, eventually releasing through seismic waves, resulting in an earthquake. This release of energy happens at so called faults, and can happen in 3 types (see image).

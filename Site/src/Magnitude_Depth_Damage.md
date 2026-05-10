@@ -79,30 +79,7 @@ display(Plot.plot({
       strokeOpacity: 0.7,
       strokeWidth: 2
     }),
-    Plot.text(
-      [{x: 10, label: "default shallow value"}],
-      {
-        x: "x",
-        text: "label",
-        frameAnchor: "bottom",  // changed from "top"
-        dy: 30,                  // changed from -10
-        fill: "grey",
-        fontSize: 14,
-        fontWeight: "bold"
-      }
-    ),
-    Plot.text(
-      [{x: 33, label: "default deep value"}],
-      {
-        x: "x",
-        text: "label",
-        frameAnchor: "bottom",  // changed from "top"
-        dy: 30,                  // changed from -10
-        fill: "grey",
-        fontSize: 14,
-        fontWeight: "bold"
-      }
-    ),
+
     Plot.text(
       [{x: 50, label: "← Shallow"}],
       {

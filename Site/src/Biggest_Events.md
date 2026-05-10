@@ -131,7 +131,7 @@ const impact_data = data_raw2
 
 ## Frequency of earthquakes
 
-The most frequent earthquakes in our dataset (which only includdes earthquakes with casualties and/or damages) fall between a magnitude of 6 and 7. The general rule of thumb is that for every increase in magnitude (= 10x increase in amplitude) of an earthquake, the frequency drops tenfold. Our dataset thus shows the 6-7 range earthquakes occur frequently enough and cause damage often enough to dominate the dataset. With heavier earthquakes happeningen less often, and lighter earthquakes not causing as much damage. 
+The most frequent earthquakes in our dataset (which only includdes earthquakes with casualties and/or damages) fall between a magnitude of 6 and 7. The general rule of thumb is that for every increase in magnitude (= 10x increase in amplitude) of an earthquake, the frequency drops tenfold. Our dataset thus shows the 6-7 range earthquakes occur frequently enough and cause damage often enough to dominate the dataset. With heavier earthquakes happening less often, and lighter earthquakes not causing as much damage. 
 
 ```js
 const pyramidData = Array.from(
@@ -257,8 +257,7 @@ display(Plot.plot({
       r: 2,
       fill: "steelblue"
     }),
-    Plot.ruleX([0.1], {stroke: "grey", strokeDasharray: "4,2"}),
-    Plot.ruleY([0.5], {stroke: "grey", strokeDasharray: "4,2"})
+    
   ]
 }));
 ```
@@ -297,14 +296,6 @@ display(Plot.plot({
       title: d => `${d.Label}
 ${metric}: ${d3.format(",")(d.Impact)}`
     }),
-    Plot.text(top10, {
-      x: "Impact",
-      y: "Label",
-      text: d => d3.format("~s")(d.Impact),
-      dx: 8,
-      textAnchor: "start",
-      fill: "white"
-    })
   ]
 }));
 ```

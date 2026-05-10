@@ -107,10 +107,10 @@ const plotData = impact_data
     ...d,
     Impact: metric === "Deaths" ? d.Deaths : d.Damage,
     MagClass:
-      d.Mag < 5 ? "5 or less" :
-      d.Mag < 6 ? "5–6" :
-      d.Mag < 7 ? "6–7" :
-      d.Mag < 8 ? "7–8" :
+      d.Mag < 5 ? "5 or fewer" :
+      d.Mag < 6 ? "5–5.9" :
+      d.Mag < 7 ? "6–6.9" :
+      d.Mag < 8 ? "7–7.9" :
       "8 or more",
     DepthClass:
       isNaN(d.Depth) ? null :
